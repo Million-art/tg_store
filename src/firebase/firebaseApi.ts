@@ -103,7 +103,7 @@ export const fetchProductsFromFirebase = async (): Promise<Product[]> => {
           id: doc.id, 
           name: data.name ?? "Unknown Product", 
           price: data.price ?? 0, 
-          stock: data.stock ?? 0, 
+          quantity: data.quantity ?? 0, 
           category: data.category ?? "Uncategorized", 
         };
       });
