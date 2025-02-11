@@ -1,22 +1,11 @@
+import { User } from '../../interface/user.ts';
 import { RootState } from '../store.ts';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
  
-// Define user type
-export type TUser = {
-  uid: string;
-  firstName: string;
-  lastName: string;
-  userImage: string | null;
-  username?: string
-  languageCode?:string,
-  referrals?: string[],
-  referredBy?: string | null,
-  isPremium?: boolean
 
-};
 
 export type TUserSlice = {
-  value: TUser | null;
+  value: User | null;
 };
 
 // Initial state
@@ -30,7 +19,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     // Action to set user data
-    setUser: (state, action: PayloadAction<TUser>) => {
+    setUser: (state, action: PayloadAction<User>) => {
       state.value = action.payload;
     },
     // Action to clear user data
@@ -42,7 +31,7 @@ const userSlice = createSlice({
 });
 
 // Selector to get the user from the Redux state
-export const selectUser = (state: RootState): TUser | null => state.user.value;
+export const selectUser = (state: RootState): User | null => state.user.value;
 
 // Export actions and reducer
 export const { setUser, clearUser } = userSlice.actions;
