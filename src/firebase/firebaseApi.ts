@@ -94,24 +94,24 @@ export const deleteOrderFromFirebase = async (id: string): Promise<string> => {
 /** 
  * Fetch all products from Firestore
  */
-export const fetchProductsFromFirebase = async (): Promise<Product[]> => {
-    try {
-      const snapshot = await getDocs(productsCollection);
-      return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => {
-        const data = doc.data() as Partial<Product>;
-        return { 
-          id: doc.id, 
-          name: data.name ?? "Unknown Product", 
-          price: data.price ?? 0, 
-          quantity: data.quantity ?? 0, 
-          category: data.category ?? "Uncategorized", 
-        };
-      });
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      throw new Error("Failed to fetch products.");
-    }
-  };
+// export const fetchProductsFromFirebase = async (): Promise<Product[]> => {
+//     try {
+//       const snapshot = await getDocs(productsCollection);
+//       return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => {
+//         const data = doc.data() as Partial<Product>;
+//         return { 
+//           id: doc.id, 
+//           name: data.name ?? "Unknown Product", 
+//           price: data.price ?? 0, 
+//           quantity: data.quantity ?? 0, 
+//           category: data.category ?? "Uncategorized", 
+//         };
+//       });
+//     } catch (error) {
+//       console.error("Error fetching products:", error);
+//       throw new Error("Failed to fetch products.");
+//     }
+//   };
   
 
 /** 
