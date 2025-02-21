@@ -1,55 +1,95 @@
-// src/screens/Cart.tsx
 import { useSelector, useDispatch } from "react-redux";
-import { RootState, AppDispatch } from "../store/store"; // Import AppDispatch
-import { removeFromCart, clearCart, fetchCart } from "../store/slice/cartReducer";
+import { RootState, AppDispatch } from "../store/store";  
+import { 
+  removeFromCart, 
+  clearCart, 
+  fetchCart, 
+  incrementQuantity, 
+  decrementQuantity 
+} from "../store/slice/cartReducer";
 import { useEffect } from "react";
+import { Trash2, Plus, Minus } from "lucide-react";
+import { CartItem } from "../interface/cart";
 
 const Cart = () => {
-  const dispatch = useDispatch<AppDispatch>(); // ✅ Correct typing
+  const dispatch = useDispatch<AppDispatch>(); 
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const loading = useSelector((state: RootState) => state.cart.loading);
   const error = useSelector((state: RootState) => state.cart.error);
-  const user = useSelector((state: RootState) => state.user.value);
 
-  // Fetch cart items on component mount
+  const userId = "123"; 
+
   useEffect(() => {
-    if (user) {
-      dispatch(fetchCart(user.uid));
-    }
-  }, [dispatch, user]);
+    dispatch(fetchCart(userId));  
+  }, [dispatch]);
 
   const handleClearCart = () => {
-    if (!user) {
-      alert("Please log in to clear the cart.");
-      return;
+    dispatch(clearCart(userId));  
+  };
+
+  const handleIncrement = (item: CartItem) => {
+    if (item.quantity < 100) {  // optional limit to avoid overflow
+      dispatch(incrementQuantity({ id: item.id, quantity: item.quantity }));
     }
-    dispatch(clearCart(user.uid));
+  };
+
+  const handleDecrement = (item: CartItem) => {
+    if (item.quantity > 1) {
+      dispatch(decrementQuantity({ id: item.id, quantity: item.quantity }));
+    }
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold">Your Cart</h2>
+    <div className="p-6 max-w-3xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
 
-      {loading && <p>Loading cart items...</p>}
+      {loading && <p className="text-gray-500">Loading cart items...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
       {cartItems.length === 0 ? (
-        <p>Your cart is empty.</p>
+        <p className="text-gray-600">Your cart is empty.</p>
       ) : (
-        <div>
+        <div className="space-y-4">
           {cartItems.map((item) => (
-            <div key={item.id} className="border p-2 mb-2 flex justify-between">
-              <span>{item.name} (x{item.quantity}) - ${item.price * item.quantity}</span>
+            <div key={item.id} className="flex items-center justify-between border p-4 rounded-lg shadow-sm">
+              {item.image && Array.isArray(item.image) && item.image.length > 0 ? (
+                <img src={item.image[0]} alt={item.name} className="w-16 h-16 object-cover rounded" />
+              ) : (
+                <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
+                  <span className="text-gray-500 text-sm">No Image</span>
+                </div>
+              )}
+              <div className="flex-1 ml-4">
+                <p className="text-lg font-semibold">{item.name}</p>
+                <p className="text-gray-600">${item.price.toFixed(2)}</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 disabled:opacity-50"
+                  onClick={() => handleDecrement(item)} // decrement
+                  disabled={item.quantity <= 1}
+                >
+                  <Minus size={16} />
+                </button>
+                <span className="text-lg font-semibold">{item.quantity}</span>
+                <button
+                  className="p-2 bg-gray-200 rounded-full hover:bg-gray-300"
+                  onClick={() => handleIncrement(item)} // increment
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
               <button
-                className="bg-red-500 text-white px-2 py-1"
-                onClick={() => dispatch(removeFromCart(item.id))}
+                className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600"
+                onClick={() => dispatch(removeFromCart({ id: item.id, userId }))} // remove
               >
-                Remove
+                <Trash2 size={16} />
               </button>
+
             </div>
           ))}
           <button
-            className="bg-gray-600 text-white px-4 py-2 mt-4"
+            className="w-full bg-gray-700 text-white py-3 rounded-lg hover:bg-gray-800"
             onClick={handleClearCart}
           >
             Clear Cart
