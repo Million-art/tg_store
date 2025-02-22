@@ -6,23 +6,39 @@ import type { RootState, AppDispatch } from "../store/store";
 import { ShoppingCart, Search } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "../components/ui/dialog";
 import { Product } from "../interface/product";
-import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { db } from "../firebase/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import ProductDetailCarousel from "../components/product/ProductDetailCarousel";
 
 const Products = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { items, loading, error } = useSelector((state: RootState) => state.products);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [categories, setCategories] = useState<string[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [cartProducts, setCartProducts] = useState<string[]>([]);
-  const userId = "123"; 
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10; // 2 columns * 5 rows
+  const userId = "123";
 
   useEffect(() => {
     dispatch(fetchProducts());
+    fetchCategories();
     fetchCartProducts();
   }, [dispatch]);
+
+  const fetchCategories = async () => {
+    try {
+      const categoryQuery = collection(db, "categories");
+      const querySnapshot = await getDocs(categoryQuery);
+      const categoryList = querySnapshot.docs.map((doc) => doc.data().name);
+      setCategories(categoryList);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
 
   const fetchCartProducts = async () => {
     try {
@@ -45,28 +61,55 @@ const Products = () => {
     }
   };
 
+  const filteredProducts = items.filter((product) =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (selectedCategory === "" || product.category === selectedCategory)
+  );
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const displayedProducts = filteredProducts.slice(
+    (currentPage - 1) * productsPerPage,
+    currentPage * productsPerPage
+  );
+
   if (loading) return <p className="text-center text-lg font-semibold">Loading...</p>;
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
-  const filteredProducts = items.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
     <div className="max-w-6xl mt-16 mx-auto p-4">
-      <div className="flex items-center bg-gray-100 rounded-lg px-4 py-3 mb-8 w-full max-w-md mx-auto shadow-sm">
-        <Search className="text-gray-500" size={20} />
-        <input
-          type="text"
-          placeholder="Search products..."
-          className="bg-transparent outline-none w-full ml-3 text-gray-700 placeholder-gray-500"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+      {/* Search and Filter */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 space-y-3 sm:space-y-0">
+        {/* Search Input */}
+        <div className="flex items-center bg-gray-100 rounded-lg px-4 py-3 w-full sm:max-w-md shadow-sm">
+          <Search className="text-gray-500" size={20} />
+          <input
+            type="text"
+            placeholder="Search products..."
+            className="bg-transparent outline-none w-full ml-3 text-gray-700 placeholder-gray-500"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        {/* Category Filter */}
+        <select
+          className="w-full sm:w-48 p-2 bg-white border rounded-lg shadow-sm cursor-pointer"
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          <option value="">All Categories</option>
+          {categories.map((category, index) => (
+            <option key={index} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {filteredProducts.map((product) => (
+      {/* Product Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        {displayedProducts.map((product) => (
           <Dialog key={product.id}>
             <DialogTrigger asChild>
               <div
@@ -76,16 +119,16 @@ const Products = () => {
                 <img
                   src={product.image[0]}
                   alt={product.name}
-                  className="w-full h-44 object-cover rounded-lg"
+                  className="w-full h-36 object-cover rounded-lg"
                 />
-                <h2 className="text-lg font-semibold mt-3 text-gray-900">{product.name}</h2>
+                <h2 className="text-md font-semibold mt-2 text-gray-900">{product.name}</h2>
                 <p className="text-gray-600 text-sm">${product.price}</p>
 
                 {/* Add to Cart Button */}
                 <button
                   className={`w-full ${
                     isInCart(product.id) ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-                  } text-white font-medium py-2 rounded-lg mt-4 flex items-center justify-center transition`}
+                  } text-white font-medium py-2 rounded-lg mt-3 flex items-center justify-center transition`}
                   onClick={(e) => handleAddToCart(product, e)}
                   disabled={isInCart(product.id)}
                 >
@@ -103,28 +146,20 @@ const Products = () => {
           </Dialog>
         ))}
       </div>
-    </div>
-  );
-};
 
-const ProductDetailCarousel = ({ product }: { product: Product }) => {
-  return (
-    <div className="grid grid-cols-1 text-white md:grid-cols-2 gap-6">
-      <Carousel showThumbs={false} infiniteLoop autoPlay>
-        {product.image.map((img, index) => (
-          <div key={index}>
-            <img
-              src={img}
-              alt={`${product.name} ${index + 1}`}
-              className="w-full h-80 object-cover rounded-lg"
-            />
-          </div>
+      {/* Pagination */}
+      <div className="flex justify-center mt-6">
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i}
+            className={`mx-1 px-3 py-2 rounded-lg ${
+              currentPage === i + 1 ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
+            }`}
+            onClick={() => setCurrentPage(i + 1)}
+          >
+            {i + 1}
+          </button>
         ))}
-      </Carousel>
-      <div>
-        <h2 className="text-2xl font-bold">{product.name}</h2>
-        <p className="mt-2">{product.description}</p>
-        <p className="text-lg font-semibold mt-3">${product.price}</p>
       </div>
     </div>
   );
