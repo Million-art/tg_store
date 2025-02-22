@@ -10,6 +10,7 @@ import { Home } from "./screens/Home";
 import Order from "./screens/Order";
 import Products from "./screens/Products";
 import Cart from "./screens/Cart";
+import Referrals from "./screens/Referrals";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/orders" element={<Order />} />
           <Route path="/products" element={<Products />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/referral" element={<Referrals />} />
         </Routes>
         <BottomNav />
       </ThemeProvider>

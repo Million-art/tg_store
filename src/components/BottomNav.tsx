@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Home, ShoppingCart, Package, Boxes } from "lucide-react";
+import { Home, ShoppingCart, Package, Boxes, Users2 } from "lucide-react";
 import { cn } from "../libs/utils";
 
 interface NavItem {
@@ -15,56 +15,44 @@ export default function BottomNav() {
   const navigate = useNavigate();
 
   const navItems: NavItem[] = [
-    {
-      id: "home",
-      label: "Home",
-      icon: <Home className="h-5 w-5" />,
-      path: "/",
-    },
-    {
-      id: "products",
-      label: "Products",
-      icon: <Boxes className="h-5 w-5" />,
-      path: "/products",
-    },
-    {
-      id: "cart",
-      label: "Cart",
-      icon: <ShoppingCart className="h-5 w-5" />,
-      path: "/cart",
-    },
-    {
-      id: "order",
-      label: "My Orders",
-      icon: <Package className="h-5 w-5" />,
-      path: "/orders",
-    },
+    { id: "home", label: "Home", icon: <Home />, path: "/" },
+    { id: "products", label: "Products", icon: <Boxes />, path: "/products" },
+    { id: "cart", label: "Cart", icon: <ShoppingCart />, path: "/cart" },
+    { id: "order", label: "My Orders", icon: <Package />, path: "/orders" },
+    { id: "referral", label: "Referrals", icon: <Users2 />, path: "/referrals" },
   ];
 
   const handleNavigation = (id: string, path: string) => {
+    if (active === id) return; // Avoid unnecessary updates
     setActive(id);
     navigate(path);
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 border-t bg-orange-500">
+    <nav className="fixed bottom-0 left-0 right-0 text-white border-t shadow-md bg-orange-500">
       <div className="flex justify-around items-center h-16">
         {navItems.map((item) => (
           <button
             key={item.id}
             onClick={() => handleNavigation(item.id, item.path)}
-            className="flex flex-col items-center justify-center flex-1 h-full"
+            className="relative flex flex-col items-center justify-center flex-1 h-full focus:outline-none"
+            aria-label={item.label}
           >
             <div
               className={cn(
                 "flex flex-col items-center gap-1 transition-colors",
                 active === item.id
-                  ? "text-primary dark:text-white"
-                  : "text-muted-foreground dark:text-gray-200"
+                  ? "text-white dark:text-gray-200 font-semibold"
+                  : "text-gray-500 dark:text-gray-200"
               )}
             >
-              {item.icon}
-              <span className="text-xs font-medium">{item.label}</span>
+              <div className="relative">
+                {item.icon}
+                {active === item.id && (
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-6 h-1 rounded-full bg-green-500 dark:bg-green-400" />
+                )}
+              </div>
+              <span className="text-xs">{item.label}</span>
             </div>
           </button>
         ))}
