@@ -151,8 +151,6 @@
 // export default ReferredUsers;
 
 
-import React from 'react'
-
 const ReferredUsers = () => {
   return (
     <div>ReferredUsers</div>
