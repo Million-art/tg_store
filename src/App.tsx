@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState, store } from "./store/store"; 
+import { AppDispatch, RootState } from "./store/store"; 
 import { ThemeProvider } from "next-themes"; 
 import { Routes, Route } from "react-router-dom";
 
