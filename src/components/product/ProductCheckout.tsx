@@ -4,6 +4,7 @@ import { CartItem } from "../../interface/cart";
 // import { requestPhoneAccess } from "@telegram-apps/sdk";
 import { setShowMessage } from "../../store/slice/messageReducer";
 import { useDispatch } from "react-redux";
+import { telegramId } from "../../libs/telegram";
 
 interface ProductCheckoutProps {
   cartItems: CartItem[];
@@ -14,14 +15,14 @@ interface ProductCheckoutProps {
 const ProductCheckout = ({ cartItems, totalPrice, onClose }: ProductCheckoutProps) => {
   const [paymentMethod, setPaymentMethod] = useState<"cash" | "chapa">("cash");
   const [loading, setLoading] = useState(false);
-  const userId = "123"; 
   const dispatch = useDispatch();
 
   const handlePlaceOrder = async () => {
+    const id = String(telegramId);  
     try {
       setLoading(true);
       const orderData = {
-        userId,
+        id,
         items: cartItems.map((item) => ({
           productId: item.id,
           name: item.name,

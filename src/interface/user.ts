@@ -1,9 +1,9 @@
 import { Timestamp } from "firebase/firestore";
 
 export type User = {
-    uid: string;
+    id: string;
     firstName: string;
-    lastName: string;
+    lastName?: string;
     userImage?: string | null;
     username?: string;
     languageCode?: string;
@@ -11,7 +11,7 @@ export type User = {
     referredBy?: string | null;
     isPremium?: boolean;
     balance?: number;
-    daily: {
+    daily?: {
       claimedTime: Timestamp | Date | string | null;
       claimedDay: number;
     };
