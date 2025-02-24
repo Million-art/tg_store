@@ -29,27 +29,27 @@ export default function BottomNav() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 text-white border-t shadow-md bg-orange-500">
+    <nav className="fixed bottom-0 left-0 right-0 bg-orange-500 text-white border-t shadow-md">
       <div className="flex justify-around items-center h-16">
         {navItems.map((item) => (
           <button
             key={item.id}
             onClick={() => handleNavigation(item.id, item.path)}
-            className="relative flex flex-col items-center justify-center flex-1 h-full focus:outline-none"
+            className="relative flex flex-col items-center justify-center flex-1 h-full p-2 transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none"
             aria-label={item.label}
           >
             <div
               className={cn(
                 "flex flex-col items-center gap-1 transition-colors",
                 active === item.id
-                  ? "text-white dark:text-gray-200 font-semibold"
-                  : "text-gray-500 dark:text-gray-200"
+                  ? "text-white font-semibold"
+                  : "text-gray-500"
               )}
             >
               <div className="relative">
                 {item.icon}
                 {active === item.id && (
-                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-6 h-1 rounded-full bg-green-500 dark:bg-green-400" />
+                  <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-6 h-1 rounded-full bg-green-500" />
                 )}
               </div>
               <span className="text-xs">{item.label}</span>
