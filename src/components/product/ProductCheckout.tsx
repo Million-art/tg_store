@@ -19,7 +19,7 @@ const ProductCheckout = ({ cartItems, totalPrice, onClose }: ProductCheckoutProp
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div className="fixed inset-0 bg-gray-800 bg-opacity-30 flex items-center justify-center">
       <div className=" p-6 rounded-lg w-96">
         <h2 className="text-xl font-bold mb-4">Checkout</h2>
 
