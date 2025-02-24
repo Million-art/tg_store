@@ -35,7 +35,7 @@ function App() {
     }, [message, dispatch]);
 
   return (
-      <ThemeProvider attribute="class" defaultTheme="system">
+      <ThemeProvider attribute="class" defaultTheme="light">
         <TopNav />
         <ToastContainer
         style={{
