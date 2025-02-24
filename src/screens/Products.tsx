@@ -11,6 +11,7 @@ import { db } from "../firebase/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import ProductDetailCarousel from "../components/product/ProductDetailCarousel";
 import { Category } from "../interface/Category";
+import { setShowMessage } from "../store/slice/messageReducer";
 
 const Products = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -66,7 +67,19 @@ const Products = () => {
     if (!isInCart(product.id)) {
       dispatch(addToCart({ userId, product }));
       setCartProducts((prev) => [...prev, product.id]);
+      dispatch(
+        setShowMessage({
+          message: 'Product added successfully',
+          color: 'green',
+        })
+      );
     }
+    dispatch(
+      setShowMessage({
+        message: 'Please Try Again Later', 
+        color: 'red',
+      })
+    );
   };
 
   // Filter products based on search term and selected category

@@ -6,6 +6,7 @@ import { addToCart } from "../../store/slice/cartReducer";
 import { Product } from "../../interface/product";
 import { AppDispatch, RootState } from "../../store/store";
 import { useMemo } from "react";
+import { setShowMessage } from "../../store/slice/messageReducer";
 
 interface Props {
   product: Product;
@@ -14,8 +15,8 @@ interface Props {
 const ProductDetailCarousel = ({ product }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const cartItems = useSelector((state: RootState) => state.cart.items);
-  const userId = "123"; // Replace with dynamic user ID
-
+  const userId = "123"; 
+  
   // Use useMemo to optimize performance
   const isInCart = useMemo(
     () => cartItems.some((item) => item.id === product.id),
@@ -26,7 +27,14 @@ const ProductDetailCarousel = ({ product }: Props) => {
     e.stopPropagation();
     if (!isInCart) {
       dispatch(addToCart({ userId, product }));
+      dispatch(
+        setShowMessage({
+          message: 'Product added successfully!',
+          color: 'green',
+        })
+      );
     }
+    
   };
 
   return (
