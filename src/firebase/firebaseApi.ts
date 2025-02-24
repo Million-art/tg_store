@@ -1,3 +1,4 @@
+import { Category } from "../interface/Category";
 import { Order } from "../interface/order";
 import { Product } from "../interface/product";
 import { db } from "./firebase";
@@ -105,7 +106,7 @@ export const fetchProductsFromFirebase = async (): Promise<Product[]> => {
           price: data.price ?? 0, 
           image: data.image??[],
           quantity: data.quantity ?? 0, 
-          category: data.category ?? "Uncategorized", 
+          category: (data.category as Category) ?? "Uncategorized",
         };
       });
     } catch (error) {
