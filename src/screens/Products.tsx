@@ -10,17 +10,18 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { db } from "../firebase/firebase";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import ProductDetailCarousel from "../components/product/ProductDetailCarousel";
+import { Category } from "../interface/Category";
 
 const Products = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { items, loading, error } = useSelector((state: RootState) => state.products);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [cartProducts, setCartProducts] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 10; // 2 columns * 5 rows
+  const productsPerPage = 10;
   const userId = "123";
 
   useEffect(() => {
@@ -29,17 +30,22 @@ const Products = () => {
     fetchCartProducts();
   }, [dispatch]);
 
+  // Fetch categories from Firestore
   const fetchCategories = async () => {
     try {
       const categoryQuery = collection(db, "categories");
       const querySnapshot = await getDocs(categoryQuery);
-      const categoryList = querySnapshot.docs.map((doc) => doc.data().name);
+      const categoryList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        name: doc.data().name,
+      }));
       setCategories(categoryList);
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
   };
 
+  // Fetch products in the cart for the user
   const fetchCartProducts = async () => {
     try {
       const cartQuery = query(collection(db, "carts"), where("userId", "==", userId));
@@ -51,8 +57,10 @@ const Products = () => {
     }
   };
 
+  // Check if a product is in the cart
   const isInCart = (productId: string) => cartProducts.includes(productId);
 
+  // Add a product to the cart
   const handleAddToCart = async (product: Product, e: React.MouseEvent) => {
     e.stopPropagation();
     if (!isInCart(product.id)) {
@@ -61,9 +69,10 @@ const Products = () => {
     }
   };
 
+  // Filter products based on search term and selected category
   const filteredProducts = items.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (selectedCategory === "" || product.category === selectedCategory)
+    (selectedCategory === "" || product.category?.id === selectedCategory)
   );
 
   // Pagination logic
@@ -81,12 +90,12 @@ const Products = () => {
       {/* Search and Filter */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 space-y-3 sm:space-y-0">
         {/* Search Input */}
-        <div className="flex items-center bg-gray-100 rounded-lg px-4 py-3 w-full sm:max-w-md shadow-sm">
-          <Search className="text-gray-500" size={20} />
+        <div className="flex items-center  rounded-lg px-4 py-3 w-full sm:max-w-md shadow-md border">
+          <Search className="text-gray-medium" size={20} />
           <input
             type="text"
             placeholder="Search products..."
-            className="bg-transparent outline-none w-full ml-3 text-gray-700 placeholder-gray-500"
+            className="bg-transparent outline-none w-full ml-3 text-gray-dark placeholder-gray-medium"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -94,16 +103,18 @@ const Products = () => {
 
         {/* Category Filter */}
         <select
-          className="w-full sm:w-48 p-2 bg-white border rounded-lg shadow-sm cursor-pointer"
+          className="w-full sm:w-48 p-2 border border-gray-medium rounded-lg shadow-sm cursor-pointer"
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
         >
           <option value="">All Categories</option>
-          {categories.map((category, index) => (
-            <option key={index} value={category}>
-              {category}
-            </option>
-          ))}
+          {categories.map((category) => {
+            return (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            );
+          })}
         </select>
       </div>
 
@@ -113,7 +124,7 @@ const Products = () => {
           <Dialog key={product.id}>
             <DialogTrigger asChild>
               <div
-                className="bg-white shadow-lg rounded-xl p-4 transition-transform transform hover:scale-105 cursor-pointer border border-gray-200"
+                className="bg-white shadow-lg rounded-xl p-4 transition-transform transform hover:scale-105 cursor-pointer border border-gray-medium"
                 onClick={() => setSelectedProduct(product)}
               >
                 <img
@@ -121,13 +132,13 @@ const Products = () => {
                   alt={product.name}
                   className="w-full h-36 object-cover rounded-lg"
                 />
-                <h2 className="text-md font-semibold mt-2 text-gray-900">{product.name}</h2>
-                <p className="text-gray-600 text-sm">${product.price}</p>
+                <h2 className="text-md font-semibold mt-2 text-gray-dark">{product.name}</h2>
+                <p className="text-gray-medium text-sm">${product.price}</p>
 
                 {/* Add to Cart Button */}
                 <button
                   className={`w-full ${
-                    isInCart(product.id) ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+                    isInCart(product.id) ? "bg-gray-medium cursor-not-allowed" : "bg-orange-light hover:bg-orange-medium"
                   } text-white font-medium py-2 rounded-lg mt-3 flex items-center justify-center transition`}
                   onClick={(e) => handleAddToCart(product, e)}
                   disabled={isInCart(product.id)}
@@ -139,7 +150,7 @@ const Products = () => {
             </DialogTrigger>
 
             {selectedProduct?.id === product.id && (
-              <DialogContent className="max-w-2xl p-6 bg-gray-800 text-white rounded-xl shadow-xl">
+              <DialogContent className="max-w-2xl p-6 bg-gray-dark text-white rounded-xl shadow-xl">
                 <ProductDetailCarousel product={selectedProduct} />
               </DialogContent>
             )}
@@ -153,7 +164,7 @@ const Products = () => {
           <button
             key={i}
             className={`mx-1 px-3 py-2 rounded-lg ${
-              currentPage === i + 1 ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
+              currentPage === i + 1 ? "bg-orange-light text-white" : "bg-gray-light text-gray-dark"
             }`}
             onClick={() => setCurrentPage(i + 1)}
           >

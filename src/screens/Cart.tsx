@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store/store";  
 import { 
@@ -10,12 +11,15 @@ import {
 import { useEffect } from "react";
 import { Trash2, Plus, Minus } from "lucide-react";
 import { CartItem } from "../interface/cart";
-
+import ProductCheckout from "../components/product/ProductCheckout";
+ 
 const Cart = () => {
   const dispatch = useDispatch<AppDispatch>(); 
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const loading = useSelector((state: RootState) => state.cart.loading);
   const error = useSelector((state: RootState) => state.cart.error);
+
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false); // State for dialog visibility
 
   const userId = "123"; 
 
@@ -37,6 +41,21 @@ const Cart = () => {
     if (item.quantity > 1) {
       dispatch(decrementQuantity({ id: item.id, quantity: item.quantity }));
     }
+  };
+
+  // Calculate the total price
+  const totalPrice = cartItems.reduce((total, item) => {
+    return total + item.price * item.quantity;
+  }, 0);
+
+  // Open the checkout dialog
+  const handleCreateOrder = () => {
+    setIsCheckoutOpen(true);
+  };
+
+  // Close the checkout dialog
+  const handleCloseCheckout = () => {
+    setIsCheckoutOpen(false);
   };
 
   return (
@@ -61,11 +80,11 @@ const Cart = () => {
               )}
               <div className="flex-1 ml-4">
                 <p className="text-lg font-semibold">{item.name}</p>
-                <p className="text-gray-600">${item.price.toFixed(2)}</p>
+                <p className="text-gray-200">{item.price.toFixed(2)}ETB</p>
               </div>
               <div className="flex items-center gap-2">
                 <button
-                  className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 disabled:opacity-50"
+                  className="p-2  rounded-full  disabled:opacity-50"
                   onClick={() => handleDecrement(item)} // decrement
                   disabled={item.quantity <= 1}
                 >
@@ -73,28 +92,50 @@ const Cart = () => {
                 </button>
                 <span className="text-lg font-semibold">{item.quantity}</span>
                 <button
-                  className="p-2 bg-gray-200 rounded-full hover:bg-gray-300"
+                  className="p-2  rounded-full"
                   onClick={() => handleIncrement(item)} // increment
                 >
                   <Plus size={16} />
                 </button>
               </div>
               <button
-                className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600"
+                className="p-2 bg-red-500 text-white rounded-full ml-3 hover:bg-red-600"
                 onClick={() => dispatch(removeFromCart({ id: item.id, userId }))} // remove
               >
                 <Trash2 size={16} />
               </button>
-
             </div>
           ))}
-          <button
-            className="w-full bg-gray-700 text-white py-3 rounded-lg hover:bg-gray-800"
-            onClick={handleClearCart}
-          >
-            Clear Cart
-          </button>
+
+          {/* Display the total price */}
+          <div className="flex justify-between items-center mt-6">
+            <p className="text-xl font-semibold">Total:</p>
+            <p className="text-xl font-semibold">{totalPrice.toFixed(2)} ETB</p>
+          </div>
+          <div className="flex justify-between items-center">
+            <button
+              className="w-fit bg-red-500 p-2 text-white py-3 rounded-lg mt-4"
+              onClick={handleClearCart}
+            >
+              Clear Cart
+            </button>
+            <button
+              className="w-fit bg-green-500 p-2 text-white py-3 rounded-lg mt-4"
+              onClick={handleCreateOrder} // Open the checkout dialog
+            >
+              Create Order
+            </button>
+          </div>
         </div>
+      )}
+
+      {/* Checkout Dialog */}
+      {isCheckoutOpen && (
+        <ProductCheckout
+          cartItems={cartItems}
+          totalPrice={totalPrice}
+          onClose={handleCloseCheckout}
+        />
       )}
     </div>
   );
