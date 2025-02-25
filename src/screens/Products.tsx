@@ -12,6 +12,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import ProductDetailCarousel from "../components/product/ProductDetailCarousel";
 import { Category } from "../interface/Category";
 import { setShowMessage } from "../store/slice/messageReducer";
+import { telegramId } from "../libs/telegram";
 
 const Products = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -23,7 +24,7 @@ const Products = () => {
   const [cartProducts, setCartProducts] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 10;
-  const userId = "123";
+  const userId = String(telegramId)
 
   useEffect(() => {
     dispatch(fetchProducts());
