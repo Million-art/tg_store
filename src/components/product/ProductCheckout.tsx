@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
 import { CartItem } from "../../interface/cart";
-// import { requestPhoneAccess } from "@telegram-apps/sdk";
 import { setShowMessage } from "../../store/slice/messageReducer";
 import { useDispatch } from "react-redux";
 import { telegramId } from "../../libs/telegram";
@@ -18,11 +17,15 @@ const ProductCheckout = ({ cartItems, totalPrice, onClose }: ProductCheckoutProp
   const dispatch = useDispatch();
 
   const handlePlaceOrder = async () => {
-    const id = String(telegramId);  
+    if (!telegramId) {
+      dispatch(setShowMessage({ message: "User ID is missing", color: "red" }));
+      return;
+    }
+
     try {
       setLoading(true);
       const orderData = {
-        id,
+        userId: String(telegramId),  
         items: cartItems.map((item) => ({
           productId: item.id,
           name: item.name,
@@ -39,20 +42,21 @@ const ProductCheckout = ({ cartItems, totalPrice, onClose }: ProductCheckoutProp
       console.log("Order placed successfully:", response.data);
       dispatch(
         setShowMessage({
-          message: 'Order successed!',
-          color: 'green',
+          message: "Order placed successfully!",
+          color: "green",
         })
       );
 
       onClose();  
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error placing order:", error);
       dispatch(
         setShowMessage({
-          message: 'Please Try Again later',
-          color: 'red',
+          message: error.response?.data?.error || "Please try again later",
+          color: "red",
         })
-      );    } finally {
+      );
+    } finally {
       setLoading(false);
     }
   };

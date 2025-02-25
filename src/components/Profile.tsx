@@ -44,7 +44,7 @@ const Profile: React.FC = () => {
   const currentTheme = theme === "system" ? systemTheme : theme;
 
   return (
-    <div className="rounded-lg bg-gradient-to-r from-blue-light to-blue-medium shadow-lg w-full py-8 flex items-center px-4">
+    <div className="rounded-lg bg-gradient-to-r text-white from-blue-light to-blue-medium shadow-lg w-full py-8 flex items-center px-4">
       {/* User Info */}
       <div className="flex-1">
         <p className="text-xl">Hello, {firstName || "User"}!</p>
