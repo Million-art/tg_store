@@ -12,4 +12,12 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
+  server: {
+    // allowedHosts: ['.loca.lt'], // Allow localtunnels subdomains
+    //  allowedHosts: ['https://9d50-185-183-33-221.ngrok-free.app'], // Allow localtunnels subdomains
+     allowedHosts: [
+      "d2bf-185-183-33-220.ngrok-free.app",  
+    ],
+    
+  },
 });

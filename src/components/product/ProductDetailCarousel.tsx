@@ -39,7 +39,7 @@ const ProductDetailCarousel = ({ product }: Props) => {
   };
 
   return (
-    <div className="relative p-6 rounded-lg text-white max-w-xl">
+    <div className="relative p-6 rounded-lg  max-w-xl">
       {/* Image Carousel */}
       <Carousel showThumbs={false} infiniteLoop autoPlay>
         {product.image.map((img, index) => (
@@ -51,20 +51,20 @@ const ProductDetailCarousel = ({ product }: Props) => {
 
       {/* Product Info */}
       <h2 className="text-2xl font-semibold mt-4">{product.name}</h2>
-      <p className="text-lg font-bold text-gray-200 mt-1">${product.price}</p>
-      <p className="text-gray-light mt-2">{product.description}</p>
+      <p className="text-lg font-bold  mt-1">${product.price}</p>
+      <p className=" mt-2">{product.description}</p>
 
-      {/* Add to Cart Button */}
+      {/* Add to Cart Button
       <button
         className={`w-full ${
-          isInCart ? "bg-gray-400 cursor-not-allowed" : "bg-orange-light"
-        } text-white font-medium py-2 rounded-lg mt-3 flex items-center justify-center transition`}
+          isInCart ? "bg-gray-light cursor-not-allowed" : "bg-blue-light"
+        }  font-medium py-2 rounded-lg mt-3 flex items-center justify-center transition`}
         onClick={handleAddToCart}
         disabled={isInCart}
       >
         <ShoppingCart size={18} className="mr-2" />
-        {isInCart ? "Added to Cart" : "Add to Cart"}
-      </button>
+        {isInCart ? "" : "Add to Cart"}
+      </button> */}
     </div>
   );
 };

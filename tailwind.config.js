@@ -19,6 +19,11 @@ export default {
           dark: "#241300",
           medium: "#63391C",
         },
+        blue: {
+          light: "#30c0f9",  
+          medium: "#15a2f1",  
+          DEFAULT: "#33c3fa",  
+        },
         green: {
           light: "#5CB946",
           deep: "#135E2F",

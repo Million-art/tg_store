@@ -99,7 +99,7 @@ const Products = () => {
   if (error) return <p className="text-center text-red-500">Error: {error}</p>;
 
   return (
-    <div className="max-w-6xl mt-16 mx-auto p-4">
+    <div className="max-w-6xl mb-10 mx-auto p-4">
       {/* Search and Filter */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 space-y-3 sm:space-y-0">
         {/* Search Input */}
@@ -150,14 +150,14 @@ const Products = () => {
 
                 {/* Add to Cart Button */}
                 <button
-                  className={`w-full ${
-                    isInCart(product.id) ? "bg-gray-medium cursor-not-allowed" : "bg-orange-light hover:bg-orange-medium"
-                  } text-white font-medium py-2 rounded-lg mt-3 flex items-center justify-center transition`}
+                  className={`w-full px-2 ${
+                    isInCart(product.id) ? "bg-gray-light cursor-not-allowed" : "bg-blue-light hover:bg-blue-medium"
+                  } text-white  py-2 rounded-lg mt-3 flex items-center justify-center transition`}
                   onClick={(e) => handleAddToCart(product, e)}
                   disabled={isInCart(product.id)}
                 >
                   <ShoppingCart size={18} className="mr-2" />
-                  {isInCart(product.id) ? "Added to Cart" : "Add to Cart"}
+                  {isInCart(product.id) ? "" : "Add to Cart"}
                 </button>
               </div>
             </DialogTrigger>
@@ -177,7 +177,7 @@ const Products = () => {
           <button
             key={i}
             className={`mx-1 px-3 py-2 rounded-lg ${
-              currentPage === i + 1 ? "bg-orange-light text-white" : "bg-gray-light text-gray-dark"
+              currentPage === i + 1 ? "bg-blue-light text-white" : "bg-gray-light text-gray-dark"
             }`}
             onClick={() => setCurrentPage(i + 1)}
           >
