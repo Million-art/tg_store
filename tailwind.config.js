@@ -31,6 +31,7 @@ export default {
           medium: "#12311E",
         },
       },
+      
     },
   },
   plugins: [],

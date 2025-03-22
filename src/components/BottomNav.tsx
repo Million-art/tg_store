@@ -18,7 +18,7 @@ export default function BottomNav() {
     { id: "home", label: "Home", icon: <Home />, path: "/" },
     { id: "products", label: "Products", icon: <Boxes />, path: "/products" },
     { id: "order", label: "Orders", icon: <Package />, path: "/orders" },
-    { id: "referral", label: "Referrals", icon: <Users2 />, path: "/referrals" },
+    { id: "referral", label: "Referrals", icon: <Users2 />, path: "/referral" },
   ];
 
   const handleNavigation = (id: string, path: string) => {
