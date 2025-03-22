@@ -24,15 +24,15 @@ export const fetchOrdersFromFirebase = async (): Promise<Order[]> => {
     try {
       const snapshot = await getDocs(ordersCollection);
       return snapshot.docs.map((doc: QueryDocumentSnapshot<DocumentData>) => {
-        const data = doc.data() as Partial<Order>; // Allow partial to prevent type errors
+        const data = doc.data() as Partial<Order>; 
         return { 
           id: doc.id, 
-          productId: data.productId ?? "", // Provide default empty string if undefined
-          quantity: data.quantity ?? 0, // Default to 0 if undefined
-          totalPrice: data.totalPrice ?? 0, // Default to 0 if undefined
-          status: data.status ?? "pending", // Default to "pending" if undefined
-          customerName: data.customerName ?? "Unknown", // Default to "Unknown"
-          createdAt: data.createdAt ?? new Date().toISOString(), // Provide current timestamp if missing
+          productId: data.productId ?? "", 
+          quantity: data.quantity ?? 0, 
+          totalPrice: data.totalPrice ?? 0, 
+          status: data.status ?? "pending", 
+          customerName: data.customerName ?? "Unknown", 
+          createdAt: data.createdAt ?? new Date().toISOString(), 
         };
       });
     } catch (error) {
@@ -66,12 +66,12 @@ export const updateOrderInFirebase = async (id: string, orderData: Partial<Order
       // Ensure no property is undefined by providing defaults
       return { 
         id, 
-        productId: orderData.productId ?? "", // Default empty string
-        quantity: orderData.quantity ?? 0, // Default to 0
-        totalPrice: orderData.totalPrice ?? 0, // Default to 0
-        status: orderData.status ?? "pending", // Default to "pending"
-        customerName: orderData.customerName ?? "Unknown", // Default to "Unknown"
-        createdAt: orderData.createdAt ?? new Date().toISOString(), // Default to current timestamp
+        productId: orderData.productId ?? "", 
+        quantity: orderData.quantity ?? 0, 
+        totalPrice: orderData.totalPrice ?? 0, 
+        status: orderData.status ?? "pending", 
+        customerName: orderData.customerName ?? "Unknown",
+        createdAt: orderData.createdAt ?? new Date().toISOString(), 
       };
     } catch (error) {
       console.error(`Error updating order ${id}:`, error);
