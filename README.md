@@ -1,4 +1,4 @@
-Thought for 3 seconds### TG Store - Telegram-Based E-commerce Platform
+TG Store - Telegram-Based E-commerce Platform
 
 ## Overview
 
@@ -46,7 +46,7 @@ TG Store is a modern e-commerce platform built specifically for Telegram Mini Ap
 1. Clone the repository:
 
 ```shellscript
-git clone https://github.com/yourusername/tg-store.git
+git clone https://github.com/Million-art/tg_store.git
 cd tg-store
 ```
 
