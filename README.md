@@ -1,50 +1,78 @@
-# React + TypeScript + Vite
+TG Store - Telegram-Based E-commerce Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+TG Store is a modern e-commerce platform built specifically for Telegram Mini Apps. It allows businesses to sell products directly within the Telegram messenger, providing a seamless shopping experience for customers without leaving the app.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-- Configure the top-level `parserOptions` property like this:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Features
+
+- **Product Catalog**: Browse products with images, descriptions, and pricing
+- **Category Filtering**: Filter products by categories
+- **Shopping Cart**: Add, remove, and update quantities of products
+- **User Authentication**: Automatic authentication via Telegram
+- **Order Management**: Place and track orders
+- **Payment Integration**: Support for Cash on Delivery and Chapa payment gateway
+- **Dark/Light Mode**: Toggle between dark and light themes
+- **Referral System**: Invite friends and earn rewards
+- **Points System**: Earn and spend points for purchases
+- **Daily Check-in**: Earn rewards for daily app usage
+
+
+## Technology Stack
+
+- **Frontend**: React, TypeScript, Tailwind CSS
+- **State Management**: Redux Toolkit
+- **Backend**: Firebase (Firestore, Cloud Functions)
+- **Authentication**: Telegram Mini Apps SDK
+- **Payment Processing**: Chapa Integration
+- **Routing**: React Router
+- **UI Components**: Custom components with Lucide React icons
+
+
+## Prerequisites
+
+- Node.js (v16 or higher)
+- Firebase account
+- Telegram Bot (for hosting the Mini App)
+- Chapa account (for payment processing)
+
+
+## Installation
+
+1. Clone the repository:
+
+```shellscript
+git clone https://github.com/Million-art/tg_store.git
+cd tg-store
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+2. Install dependencies:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```shellscript
+npm install
+```
+
+
+3. Create a `.env` file in the root directory with the following variables:
+
+```plaintext
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_firebase_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_firebase_app_id
+VITE_CHAPA_PUBLIC_KEY=your_chapa_public_key
+```
+
+
+4. Start the development server:
+
+```shellscript
+npm run dev
 ```
